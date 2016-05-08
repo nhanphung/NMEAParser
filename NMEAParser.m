@@ -8,6 +8,8 @@ GPS = readtable([pathName fileName], 'ReadVariableNames', false, 'Format', '%s%s
 
 numOfDec = 10^5;
 
+T = cell(rows, 5);
+
 for i = 1:rows
     time = getTime(GPS.Var2(i));
     date = getDate(GPS.Var10(i));
