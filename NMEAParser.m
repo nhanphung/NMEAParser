@@ -26,4 +26,4 @@ end
 outputFile = array2table(T, 'VariableNames', {'time', 'date', 'latitude', 'longitude', 'speed'});
 outputFileName = ['PARSED_' fileName];
 writetable(outputFile, outputFileName);
-disp('Successfully parsed GPS data');
+disp(['Successfully parsed GPS data. Output file is: ' outputFileName]);
