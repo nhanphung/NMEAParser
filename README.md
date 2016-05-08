@@ -7,7 +7,7 @@
 
 - Kyle Walker
 
-- Vinh Truong 
+- Vinh Truong
 
 ##Usage
 1. Run NMEAParser.m
@@ -16,7 +16,7 @@
 
 ##Format
 This parser extracts 5 pieces of information from the original RMC data file.
-Output file is a comma-separated file contains: Date, Time, Latitude, Longtitude, Speed (in knots).
+Output file is a comma-separated file contains: Date, Time, Latitude, Longitude, Speed (in knots).
 
 ######Example:
 Original RMC string:
