@@ -8,21 +8,25 @@
 close all; clear; clc;
 format longG
 
-% import raw data from a text file
-[fileName, pathName] = uigetfile('*.txt', 'Select GPS data file:');
-fileName = strrep(fileName, 'TXT', 'txt');
+% import raw data from a text files
+[gpsFileName, gpsPathName] = uigetfile('*.txt', 'Select GPS data file:');
+[voltFileName, voltPathName] = uigetfile('*.txt', 'Select Voltage data file:');
+gpsFileName = strrep(gpsFileName, 'TXT', 'txt');
+voltFileName = strrep(voltFileName, 'TXT', 'txt');
 % put raw data into a table
-GPS = readtable([pathName fileName], 'ReadVariableNames', false, 'Format', '%s%s%s%s%s%s%s%s%s%s%s%s%s');
-[rows, cols] = size(GPS);
+GPS     = readtable([gpsPathName gpsFileName], 'ReadVariableNames', false, 'Format', '%s%s%s%s%s%s%s%s%s%s%s%s%s');
+Voltage = readtable([voltPathName voltFileName], 'ReadVariableNames', false);
+[gpsRows, gpsCols] = size(GPS);
+[voltRows, voltCols] = size(Voltage);
 
 % define number of decimal places for latitude and longitude
 numOfDec = 10^5;
 
 % allocate parsed cell array
-T = cell(rows, 5);
+FlightPath = cell(gpsRows, 5);
 
 % parsing useful information
-for i = 1:rows
+for i = 1:gpsRows
     check = char(GPS.Var1(i));
     if (isempty(strfind(check, '$GPRMC')) == false)
         time = getTime(GPS.Var2(i));
@@ -30,17 +34,19 @@ for i = 1:rows
         lat = getLat(GPS.Var4(i), GPS.Var5(i));
         lon = getLon(GPS.Var6(i), GPS.Var7(i));
         speed = getSpeed(GPS.Var8(i));
-        T{i,1} = time;
-        T{i,2} = date;
-        T{i,3} = round(lat*numOfDec)/numOfDec;
-        T{i,4} = round(lon*numOfDec)/numOfDec;
-        T{i,5} = speed;
+        FlightPath{i,1} = time;
+        FlightPath{i,2} = date;
+        FlightPath{i,3} = round(lat*numOfDec)/numOfDec;
+        FlightPath{i,4} = round(lon*numOfDec)/numOfDec;
+        FlightPath{i,5} = speed;
     end
 end
 
+% TODO get final table of voltage data
+
 % convert cell array to a table with appropriate headers
-outputFile = array2table(T, 'VariableNames', {'time', 'date', 'latitude', 'longitude', 'speed'});
-[outputFileName, outputPath] =  uiputfile(['PARSED_' fileName]);
+outputFile = array2table(FlightPath, 'VariableNames', {'time', 'date', 'latitude', 'longitude', 'speed'});
+[outputFileName, outputPath] =  uiputfile(['PARSED_' gpsFileName]);
 % write table to another text file
 writetable(outputFile, [outputPath outputFileName]);
 disp(['Successfully parsed GPS data. Output file is: ' outputFileName]);
